@@ -1,3 +1,19 @@
 html {
 	color-scheme: dark;
 }
+
+.app-center {
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+}
+
+.cell {
+	width: 30px;
+	aspect-ratio: 1;
+	background-color: #212121;
+	border: 2px solid #373737;
+	display: inline-block;
+	margin-inline: 2px;
+}
