@@ -9,11 +9,32 @@ html {
 	transform: translate(-50%, -50%);
 }
 
+.line {
+	display: flex;
+}
+
 .cell {
-	width: 30px;
+	width: 35px;
 	aspect-ratio: 1;
 	background-color: #212121;
 	border: 2px solid #373737;
-	display: inline-block;
+	box-sizing: border-box;
 	margin-inline: 2px;
+	text-align: center;
+	line-height: 30px;
+	margin: 2px;
+	text-transform: uppercase;
+}
+
+.correct {
+	background-color: #690;
+}
+
+.contains {
+	background-color: rgb(170, 170, 0);
+	animation: animate 1s ease-in-out;
+}
+
+.incorrect {
+	background-color: rgb(98, 98, 98);
 }
