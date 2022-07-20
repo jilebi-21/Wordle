@@ -7,6 +7,9 @@ interface LineProps extends React.HTMLAttributes<HTMLDivElement> {
 }
 interface CellProps extends React.HTMLAttributes<HTMLDivElement> {}
 
+const api =
+	"https://raw.githubusercontent.com/pruthvi-21/wordle-api/main/words-list.json";
+
 const LINE_COUNT = 6;
 const WORD_LENGTH = 5;
 
@@ -15,9 +18,25 @@ const BACKSPACE_KEY = "Backspace";
 const ENTER_KEY = "Enter";
 
 const Board = (props: BoardProps) => {
-	const solution = "hello";
+	const [isDataLoaded, setIsDataLoaded] = useState(false);
 	const [allInputs, setAllInputs] = useState(Array(LINE_COUNT).fill(null));
 	const [currentInput, setCurrentInput] = useState("");
+	const [solution, setSolution] = useState("");
+	const [data, setData] = useState<string[]>([]);
+
+	useEffect(() => {
+		(async function () {
+			const response = await fetch(api);
+			const allWords = await response.json();
+			setData(allWords);
+			setIsDataLoaded(true);
+			const sol = allWords[Math.floor(Math.random() * allWords.length)];
+			if (solution === "") {
+				setSolution(sol);
+			}
+			console.log(sol);
+		})();
+	}, []);
 
 	useEffect(() => {
 		const listener = (event: KeyboardEvent) => {
@@ -27,10 +46,12 @@ const Board = (props: BoardProps) => {
 			}
 			if (event.key === ENTER_KEY) {
 				if (currentInput.length !== 5) return;
+				if (!data.includes(currentInput.toUpperCase())) return;
 				const inputs = [...allInputs];
 				inputs[allInputs.findIndex((it) => it === null)] = currentInput;
 				setAllInputs(inputs);
 				setCurrentInput("");
+				console.log("In Enter", solution);
 				return;
 			}
 			if (
@@ -45,7 +66,7 @@ const Board = (props: BoardProps) => {
 		return () => {
 			window.removeEventListener("keydown", listener);
 		};
-	}, [currentInput, allInputs]);
+	}, [currentInput, allInputs, isDataLoaded]);
 
 	const Line = ({ value, validate, ...props }: LineProps) => {
 		let wordCount = Array(WORD_LENGTH).fill(null);
@@ -55,6 +76,7 @@ const Board = (props: BoardProps) => {
 				{wordCount.map((_item, idx) => {
 					let cellClasses = "cell ";
 					if (validate) {
+						value = value.toUpperCase();
 						if (solution.includes(value[idx])) {
 							if (value[idx] === solution[idx]) {
 								cellClasses += " present";
@@ -80,17 +102,18 @@ const Board = (props: BoardProps) => {
 	return (
 		<div {...props}>
 			{}
-			{allInputs.map((item, idx) => {
-				const v = idx === allInputs.findIndex((it) => it == null);
-				return (
-					<Line
-						key={idx}
-						id="line"
-						value={v ? currentInput : item ?? ""}
-						validate={!v && item != null}
-					/>
-				);
-			})}
+			{solution !== "" &&
+				allInputs.map((item, idx) => {
+					const v = idx === allInputs.findIndex((it) => it == null);
+					return (
+						<Line
+							key={idx}
+							id="line"
+							value={v ? currentInput : item ?? ""}
+							validate={!v && item != null}
+						/>
+					);
+				})}
 		</div>
 	);
 };
