@@ -10,6 +10,10 @@ interface CellProps extends React.HTMLAttributes<HTMLDivElement> {}
 const LINE_COUNT = 6;
 const WORD_LENGTH = 5;
 
+const INPUT_PATTERN = /^[a-zA-Z]$/;
+const BACKSPACE_KEY = "Backspace";
+const ENTER_KEY = "Enter";
+
 const Board = (props: BoardProps) => {
 	const solution = "hello";
 	const [allInputs, setAllInputs] = useState(Array(LINE_COUNT).fill(null));
@@ -17,11 +21,11 @@ const Board = (props: BoardProps) => {
 
 	useEffect(() => {
 		const listener = (event: KeyboardEvent) => {
-			if (event.key === "Backspace") {
+			if (event.key === BACKSPACE_KEY) {
 				setCurrentInput(currentInput.slice(0, -1));
 				return;
 			}
-			if (event.key === "Enter") {
+			if (event.key === ENTER_KEY) {
 				if (currentInput.length !== 5) return;
 				const inputs = [...allInputs];
 				inputs[allInputs.findIndex((it) => it === null)] = currentInput;
@@ -29,7 +33,11 @@ const Board = (props: BoardProps) => {
 				setCurrentInput("");
 				return;
 			}
-			if (currentInput.length >= WORD_LENGTH) return;
+			if (
+				currentInput.length >= WORD_LENGTH ||
+				!INPUT_PATTERN.test(event.key)
+			)
+				return;
 			setCurrentInput((ip) => ip + event.key);
 		};
 
@@ -66,8 +74,12 @@ const Board = (props: BoardProps) => {
 	const Cell = (props: CellProps) => {
 		return <div className="cell" {...props}></div>;
 	};
+
+	function test() {}
+
 	return (
 		<div {...props}>
+			{}
 			{allInputs.map((item, idx) => {
 				const v = idx === allInputs.findIndex((it) => it == null);
 				return (
