@@ -14,27 +14,33 @@ html {
 }
 
 .cell {
-	width: 35px;
+	width: 60px;
 	aspect-ratio: 1;
+	box-sizing: border-box;
 	background-color: #212121;
 	border: 2px solid #373737;
-	box-sizing: border-box;
-	margin-inline: 2px;
-	text-align: center;
-	line-height: 30px;
+	border-radius: 6px;
 	margin: 2px;
+	font-weight: 700;
+	font-size: 28px;
 	text-transform: uppercase;
+	display: grid;
+	place-items: center;
+	font-family: "Varela Round", sans-serif;
 }
 
-.correct {
-	background-color: #690;
+.present {
+	background-color: #669900;
+	border-color: #8bd100;
 }
 
-.contains {
-	background-color: rgb(170, 170, 0);
-	animation: animate 1s ease-in-out;
+.elsewhere {
+	background-color: #9d9d31;
+	border-color: #d3d300;
 }
 
-.incorrect {
-	background-color: rgb(98, 98, 98);
+.absent {
+	background-color: #626262;
+	border-color: #626262;
+	color: #fff9;
 }

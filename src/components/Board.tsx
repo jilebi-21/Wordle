@@ -47,13 +47,11 @@ const Board = (props: BoardProps) => {
 				{wordCount.map((_item, idx) => {
 					let cellClasses = "cell ";
 					if (validate) {
-						console.log(solution, value[idx]);
-						if (value === solution) cellClasses += " correct";
-						else if (solution.includes(value[idx])) {
+						if (solution.includes(value[idx])) {
 							if (value[idx] === solution[idx]) {
-								cellClasses += " correct";
-							} else cellClasses += " contains";
-						} else cellClasses += " incorrect";
+								cellClasses += " present";
+							} else cellClasses += " elsewhere";
+						} else cellClasses += " absent";
 					}
 					return (
 						<Cell className={cellClasses} key={idx}>
