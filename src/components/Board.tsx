@@ -8,7 +8,7 @@ interface LineProps extends React.HTMLAttributes<HTMLDivElement> {
 interface CellProps extends React.HTMLAttributes<HTMLDivElement> {}
 
 const api =
-	"https://raw.githubusercontent.com/pruthvi-21/wordle-api/main/words-list.json";
+	"https://raw.githubusercontent.com/pruthvi-21/api-wordle/main/words-list.json";
 
 const LINE_COUNT = 6;
 const WORD_LENGTH = 5;
@@ -46,7 +46,8 @@ const Board = (props: BoardProps) => {
 			}
 			if (event.key === ENTER_KEY) {
 				if (currentInput.length !== 5) return;
-				if (!data.includes(currentInput.toUpperCase())) return;
+				console.log(solution, currentInput);
+				if (!data.includes(currentInput.toLowerCase())) return;
 				const inputs = [...allInputs];
 				inputs[allInputs.findIndex((it) => it === null)] = currentInput;
 				setAllInputs(inputs);
@@ -76,7 +77,7 @@ const Board = (props: BoardProps) => {
 				{wordCount.map((_item, idx) => {
 					let cellClasses = "cell ";
 					if (validate) {
-						value = value.toUpperCase();
+						value = value.toLowerCase();
 						if (solution.includes(value[idx])) {
 							if (value[idx] === solution[idx]) {
 								cellClasses += " present";
