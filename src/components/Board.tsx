@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from "react";
 
-interface BoardProps extends React.HTMLAttributes<HTMLDivElement> {}
+interface BoardProps extends React.HTMLAttributes<HTMLDivElement> {
+	errorCallback?: (hasError: boolean) => void;
+}
 interface LineProps extends React.HTMLAttributes<HTMLDivElement> {
 	value: string;
 	validate: boolean;
@@ -40,19 +42,21 @@ const Board = (props: BoardProps) => {
 
 	useEffect(() => {
 		const listener = (event: KeyboardEvent) => {
+			props.errorCallback?.(false);
 			if (event.key === BACKSPACE_KEY) {
 				setCurrentInput(currentInput.slice(0, -1));
 				return;
 			}
 			if (event.key === ENTER_KEY) {
 				if (currentInput.length !== 5) return;
-				console.log(solution, currentInput);
-				if (!data.includes(currentInput.toLowerCase())) return;
+				if (!data.includes(currentInput.toLowerCase())) {
+					props.errorCallback?.(true);
+					return;
+				}
 				const inputs = [...allInputs];
 				inputs[allInputs.findIndex((it) => it === null)] = currentInput;
 				setAllInputs(inputs);
 				setCurrentInput("");
-				console.log("In Enter", solution);
 				return;
 			}
 			if (

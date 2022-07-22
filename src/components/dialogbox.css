@@ -1,0 +1,11 @@
+.dialog-box {
+	text-align: center;
+	border: 1px solid rgb(184, 0, 0);
+	padding: 15px 20px;
+	background-color: #420000;
+	border-radius: 6px;
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+}
