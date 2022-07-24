@@ -59,15 +59,15 @@ const Board = forwardRef((props: BoardProps, ref: Ref<BoardRefObj>) => {
 	}, []);
 
 	useEffect(() => {
-		const listener = (event: KeyboardEvent) => {
-			addCharacter(event.key);
-		};
-
 		window.addEventListener("keydown", listener);
 		return () => {
 			window.removeEventListener("keydown", listener);
 		};
 	}, [currentInput, allInputs, isDataLoaded]);
+
+	const listener = (event: KeyboardEvent) => {
+		addCharacter(event.key);
+	};
 
 	const addCharacter = (key: string) => {
 		props.errorCallback?.(false);
