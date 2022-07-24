@@ -1,8 +1,21 @@
-import React, { useEffect, useState } from "react";
+import React, {
+	forwardRef,
+	Ref,
+	useEffect,
+	useImperativeHandle,
+	useState,
+} from "react";
 
-interface BoardProps extends React.HTMLAttributes<HTMLDivElement> {
+interface BoardProps {
 	errorCallback?: (hasError: boolean) => void;
+	onWordEntered?: (word: string) => void;
+	ref: Ref<BoardProps>;
 }
+
+export interface BoardRefObj {
+	addCharacter: (key: string) => void;
+}
+
 interface LineProps extends React.HTMLAttributes<HTMLDivElement> {
 	value: string;
 	validate: boolean;
@@ -19,12 +32,16 @@ const INPUT_PATTERN = /^[a-zA-Z]$/;
 const BACKSPACE_KEY = "Backspace";
 const ENTER_KEY = "Enter";
 
-const Board = (props: BoardProps) => {
+const Board = forwardRef((props: BoardProps, ref: Ref<BoardRefObj>) => {
 	const [isDataLoaded, setIsDataLoaded] = useState(false);
 	const [allInputs, setAllInputs] = useState(Array(LINE_COUNT).fill(null));
 	const [currentInput, setCurrentInput] = useState("");
 	const [solution, setSolution] = useState("");
 	const [data, setData] = useState<string[]>([]);
+
+	useImperativeHandle(ref, () => ({
+		addCharacter,
+	}));
 
 	useEffect(() => {
 		(async function () {
@@ -35,36 +52,15 @@ const Board = (props: BoardProps) => {
 			const sol = allWords[Math.floor(Math.random() * allWords.length)];
 			if (solution === "") {
 				setSolution(sol);
+				console.log(sol);
+				localStorage.setItem("solution", sol);
 			}
-			console.log(sol);
 		})();
 	}, []);
 
 	useEffect(() => {
 		const listener = (event: KeyboardEvent) => {
-			props.errorCallback?.(false);
-			if (event.key === BACKSPACE_KEY) {
-				setCurrentInput(currentInput.slice(0, -1));
-				return;
-			}
-			if (event.key === ENTER_KEY) {
-				if (currentInput.length !== 5) return;
-				if (!data.includes(currentInput.toLowerCase())) {
-					props.errorCallback?.(true);
-					return;
-				}
-				const inputs = [...allInputs];
-				inputs[allInputs.findIndex((it) => it === null)] = currentInput;
-				setAllInputs(inputs);
-				setCurrentInput("");
-				return;
-			}
-			if (
-				currentInput.length >= WORD_LENGTH ||
-				!INPUT_PATTERN.test(event.key)
-			)
-				return;
-			setCurrentInput((ip) => ip + event.key);
+			addCharacter(event.key);
 		};
 
 		window.addEventListener("keydown", listener);
@@ -72,6 +68,30 @@ const Board = (props: BoardProps) => {
 			window.removeEventListener("keydown", listener);
 		};
 	}, [currentInput, allInputs, isDataLoaded]);
+
+	const addCharacter = (key: string) => {
+		props.errorCallback?.(false);
+		if (key === BACKSPACE_KEY) {
+			setCurrentInput(currentInput.slice(0, -1));
+			return;
+		}
+		if (key === ENTER_KEY) {
+			if (currentInput.length !== 5) return;
+			if (!data.includes(currentInput.toLowerCase())) {
+				props.errorCallback?.(true);
+				return;
+			}
+			const inputs = [...allInputs];
+			inputs[allInputs.findIndex((it) => it === null)] = currentInput;
+			setAllInputs(inputs);
+			props.onWordEntered?.(currentInput);
+			setCurrentInput("");
+			return;
+		}
+		if (currentInput.length >= WORD_LENGTH || !INPUT_PATTERN.test(key))
+			return;
+		setCurrentInput((ip) => ip + key);
+	};
 
 	const Line = ({ value, validate, ...props }: LineProps) => {
 		let wordCount = Array(WORD_LENGTH).fill(null);
@@ -102,11 +122,8 @@ const Board = (props: BoardProps) => {
 		return <div className="cell" {...props}></div>;
 	};
 
-	function test() {}
-
 	return (
-		<div {...props}>
-			{}
+		<div>
 			{solution !== "" &&
 				allInputs.map((item, idx) => {
 					const v = idx === allInputs.findIndex((it) => it == null);
@@ -121,6 +138,6 @@ const Board = (props: BoardProps) => {
 				})}
 		</div>
 	);
-};
+});
 
 export default Board;

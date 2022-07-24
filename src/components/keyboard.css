@@ -1,0 +1,47 @@
+.keyboard-layout {
+	padding-bottom: 30px;
+}
+
+.keyboard-row {
+	display: flex;
+	width: 100vw;
+	padding-inline: 10px;
+	max-width: 600px;
+}
+
+.keyboard-key {
+	background-color: #333;
+	border-radius: 4px;
+	border: 2px solid transparent;
+	cursor: pointer;
+	display: grid;
+	place-items: center;
+	flex: 1;
+	min-height: 50px;
+	font-weight: 700;
+	margin: 3px;
+	text-transform: capitalize;
+	transition: 0.2s;
+	font-family: "Varela Round", sans-serif;
+}
+
+.keyboard-key:hover {
+	background-color: #292929;
+}
+
+.keyboard-key-wide {
+	flex: 2;
+	background-color: #232323;
+}
+
+.keyboard-key-half-width {
+	flex: 0.5;
+	background-color: unset;
+}
+
+@media screen and (min-width: 600px) {
+	.keyboard-key {
+		min-height: 50px;
+		font-size: unset;
+	}
+}
