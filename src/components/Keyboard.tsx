@@ -3,6 +3,7 @@ import "./keyboard.css";
 
 interface Props extends React.HTMLAttributes<HTMLDivElement> {
 	input?: string;
+	solution: string;
 	keyPressEvent?: (key: string) => void;
 }
 
@@ -12,10 +13,9 @@ const rows = [
 	["Del", "z", "x", "c", "v", "b", "n", "m", "Enter"],
 ];
 
-const Keyboard = ({ input, keyPressEvent, ...props }: Props) => {
+const Keyboard = ({ input, solution, keyPressEvent, ...props }: Props) => {
 	useEffect(() => {
 		const allKeys = document.querySelectorAll(".keyboard-key");
-		const solution = localStorage.getItem("solution");
 		if (solution === undefined || solution === "") return;
 
 		input?.split("").map((item, inputKeyId) => {
